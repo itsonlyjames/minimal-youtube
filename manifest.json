@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Minimal Youtube",
+  "version": "1.0",
+  "description": "Enjoy an incredibly cosy lo-fi experience with Minimal Youtube",
+  
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Style Toggle",
+    "default_icon": {
+      "16": "icons/extension_icon@16px.png",
+      "32": "icons/extension_icon@32px.png",
+      "48": "icons/extension_icon@48px.png",
+      "128": "icons/extension_icon@128px.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/extension_icon@16px.png",
+    "32": "icons/extension_icon@32px.png",
+    "48": "icons/extension_icon@48px.png",
+    "128": "icons/extension_icon@128px.png"
+  },
+  
+  "background": {
+    "service_worker": "background.js"
+  }
+}
