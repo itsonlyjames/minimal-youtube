@@ -45,6 +45,7 @@ function applyStyles() {
   styleElement.textContent = `
 ytd-app #masthead-container.ytd-app {
   transform: translateY(calc(var(--ytd-toolbar-height) * -1));
+  display: none;
 }
 ytd-page-manager#page-manager.ytd-app {
   margin-top: 0 !important;
@@ -52,6 +53,7 @@ ytd-page-manager#page-manager.ytd-app {
 ytd-watch-flexy[full-bleed-player] #full-bleed-container.ytd-watch-flexy {
   height: 100vh !important;
   max-height: 100vh !important;
+  min-height: auto !important;
 }
   `;
 
