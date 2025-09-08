@@ -43,15 +43,11 @@ function applyStyles() {
 
   // Add your custom CSS here - example styles below
   styleElement.textContent = `
-html {
-  --ytd-toolbar-height: 0;
+ytd-app #masthead-container.ytd-app {
+  transform: translateY(calc(var(--ytd-toolbar-height) * -1));
 }
-
-div#masthead-container {
-  display: none;
-}
-ytd-page-manager #page-manager.ytd-app {
-  margin-top: 0 !imporant;
+ytd-page-manager#page-manager.ytd-app {
+  margin-top: 0 !important;
 }
 ytd-watch-flexy[full-bleed-player] #full-bleed-container.ytd-watch-flexy {
   height: 100vh !important;
