@@ -1,13 +1,20 @@
-html[cosy-youtube] ytd-app #masthead-container.ytd-app {
+html[cosy-youtube] ytd-app:has(ytd-watch-flexy) #masthead-container.ytd-app #masthead {
   transform: translateY(calc(var(--ytd-toolbar-height) * -1));
-  display: none;
+  transition: transform .3s cubic-bezier(.05,0,0,1);
+  /* display: none; */
+}
+
+html[cosy-youtube] ytd-app:has(ytd-watch-flexy) #masthead-container.ytd-app:hover #masthead {
+  transform: translateY(0);
 }
 
 html[cosy-youtube] ytd-page-manager#page-manager.ytd-app {
   margin-top: 0 !important;
 }
 
-html[cosy-youtube] ytd-watch-flexy[full-bleed-player] #full-bleed-container.ytd-watch-flexy {
+html[cosy-youtube]
+  ytd-watch-flexy[full-bleed-player]
+  #full-bleed-container.ytd-watch-flexy {
   height: 100vh !important;
   max-height: 100vh !important;
   min-height: auto !important;
