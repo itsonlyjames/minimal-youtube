@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Load current state
   const result = await chrome.storage.sync.get(['stylesEnabled']);
-  const isEnabled = result.stylesEnabled !== false; // Default to true
+  const isEnabled = result.stylesEnabled;
   
   // Update UI
   updateToggleState(isEnabled);

@@ -1,65 +1,51 @@
-// Content script for YouTube style modifications
-let stylesEnabled = true;
+let stylesEnabled = false;
 let styleElement = null;
 
-// Initialize when page loads
 initialize();
 
 async function initialize() {
-  // Get stored preference
   const result = await chrome.storage.sync.get(["stylesEnabled"]);
-  stylesEnabled = result.stylesEnabled !== false; // Default to true
+  stylesEnabled = result.stylesEnabled;
 
-  // Apply or remove styles based on preference
-  if (stylesEnabled) {
-    applyStyles();
-  } else {
-    removeStyles();
-  }
+  await injectStyles();
+  updateHtmlAttribute(stylesEnabled);
 }
 
-// Listen for messages from popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "toggleStyles") {
+    console.log('test action', message);
     stylesEnabled = message.enabled;
-
-    if (stylesEnabled) {
-      applyStyles();
-    } else {
-      removeStyles();
-    }
-
+    updateHtmlAttribute(stylesEnabled);
     sendResponse({ success: true });
   }
 });
 
-function applyStyles() {
-  // Remove existing style element if it exists
+async function injectStyles() {
   removeStyles();
 
-  // Create new style element
-  styleElement = document.createElement("style");
-  styleElement.id = "youtube-custom-styles";
+  try {
+    const response = await fetch(chrome.runtime.getURL("styles.css"));
+    const cssText = await response.text();
 
-  // Add your custom CSS here - example styles below
-  styleElement.textContent = `
-ytd-app #masthead-container.ytd-app {
-  transform: translateY(calc(var(--ytd-toolbar-height) * -1));
-  display: none;
-}
-ytd-page-manager#page-manager.ytd-app {
-  margin-top: 0 !important;
-}
-ytd-watch-flexy[full-bleed-player] #full-bleed-container.ytd-watch-flexy {
-  height: 100vh !important;
-  max-height: 100vh !important;
-  min-height: auto !important;
-}
-  `;
+    styleElement = document.createElement("style");
+    styleElement.id = "cosy-youtube-styles";
+    styleElement.textContent = cssText;
 
-  // Append to head
-  document.head.appendChild(styleElement);
+    document.head.appendChild(styleElement);
+  } catch (error) {
+    console.error("Failed to load styles.css:", error);
+  }
 
+  triggerResize();
+}
+
+function updateHtmlAttribute(enabled) {
+  const htmlEl = document.documentElement;
+  if (enabled) {
+    htmlEl.setAttribute("cosy-youtube", "");
+  } else {
+    htmlEl.removeAttribute("cosy-youtube");
+  }
   triggerResize();
 }
 
@@ -68,30 +54,21 @@ function removeStyles() {
     styleElement.remove();
     styleElement = null;
   }
-
-  // Also remove any existing style elements with our ID
-  const existingStyles = document.getElementById("youtube-custom-styles");
-  if (existingStyles) {
-    existingStyles.remove();
-  }
-
-  triggerResize();
+  const existingStyles = document.getElementById("cosy-youtube-styles");
+  if (existingStyles) existingStyles.remove();
 }
 
 function triggerResize() {
-  requestAnimationFrame(() => {
-    window.dispatchEvent(new Event("resize"));
-  });
+  requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
 }
 
-// Handle page navigation (YouTube is a SPA)
+// Handle YouTube SPA navigation
 let currentUrl = location.href;
 new MutationObserver(() => {
   if (location.href !== currentUrl) {
     currentUrl = location.href;
-    // Re-apply styles after navigation if enabled
-    if (stylesEnabled) {
-      setTimeout(applyStyles, 1000);
-    }
+    setTimeout(() => {
+      updateHtmlAttribute(stylesEnabled);
+    }, 500); // small delay for DOM updates
   }
 }).observe(document, { subtree: true, childList: true });
