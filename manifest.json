@@ -25,7 +25,7 @@
 
   "action": {
     "default_popup": "popup.html",
-    "default_title": "YouTube Style Toggle",
+    "default_title": "Cosy Youtube Toggle",
     "default_icon": {
       "16": "icons/extension_icon@16px.png",
       "32": "icons/extension_icon@32px.png",
